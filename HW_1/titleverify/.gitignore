@@ -1,0 +1,13 @@
+target/
+
+logs/
+
+.idea/
+
+output/
+
+*.iml
+
+*.txt
+*.log
+*.html
