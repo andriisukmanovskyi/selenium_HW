@@ -1,4 +1,4 @@
-package com.epam.lab;
+﻿package com.epam.lab;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -23,8 +23,12 @@ public class EmailSend {
         driver.findElement(By.xpath("//input[@name='subjectbox']")).sendKeys(subject);
         driver.findElement(By.cssSelector("div[role='dialog'] div[role='textbox']")).sendKeys(text);
         driver.findElement(By.xpath("//*[@role='button' and @class='T-I J-J5-Ji aoO T-I-atl L3']")).click();
-        return driver.findElement(By.xpath("//span[contains(text(),'Лист надіслано') or " +
-                "contains(text(),'Письмо отправлено') or contains(text(),'Message sent')]")).isDisplayed();
+        try {
+            return driver.findElement(By.xpath("//span[contains(text(),'Лист надіслано') or " +
+                    "contains(text(),'Письмо отправлено') or contains(text(),'Message sent')]")).isDisplayed();
+        }catch (Exception e){
+            return false;
+        }
     }
 
     public void loginGmail(String userName, String password) {
