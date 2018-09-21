@@ -25,7 +25,7 @@ public class EmailSend {
         driver.findElement(By.xpath("//*[@role='button' and @class='T-I J-J5-Ji aoO T-I-atl L3']")).click();
         try {
             return driver.findElement(By.xpath("//span[contains(text(),'Лист надіслано') or " +
-                    "contains(text(),'Письмо отправлено') or contains(text(),'2Message sent')]")).isDisplayed();
+                    "contains(text(),'Письмо отправлено') or contains(text(),'Message sent')]")).isDisplayed();
         }catch (Exception e){
             return false;
         }
