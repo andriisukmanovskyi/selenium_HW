@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="suite1">
+    <test name="test1">
+        <parameter name="url" value="https://kurs.com.ua/konverter/"/>
+        <parameter name="username" value="tt932101@gmail.com"/>
+        <parameter name="password" value="qwertyuiop[]\"/>
+        <classes>
+            <class name="com.epam.lab.CurrencyConverterTest" />
+        </classes>
+    </test>
+</suite>
