@@ -10,18 +10,6 @@ public class ActionDoneMessageLabel extends Element {
     }
 
     public String getText() {
-        for (int i = 0; i < 30; i++) {
-            try {
-                webElement.isDisplayed();
-                break;
-            } catch (StaleElementReferenceException e) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
         return webElement.getText();
     }
 
