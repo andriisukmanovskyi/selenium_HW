@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="suite1" parallel="methods" data-provider-thread-count="3">
+    <parameter name="url" value="https://mail.google.com"/>
     <test name="test1">
-        <parameter name="url" value="https://mail.google.com"/>
         <classes>
             <class name="com.epam.lab.TestGmail"/>
         </classes>
