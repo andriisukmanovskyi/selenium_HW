@@ -7,28 +7,22 @@ import com.epam.lab.utils.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
+
+import static com.epam.lab.utils.Constants.*;
 
 public class TestGmail {
 
     private static final Logger LOG = LogManager.getLogger("com.epam.lab");
-    private static final String LOGIN_DATA_FILE_PATH = "src/test/resources/usersLoginData.xml";
-    private static final String CHROME_DRIVER_TYPE_PROPERTY_KEY = "chromeDriverType";
-    private static final String CHROME_DRIVER_PATH_PROPERTY_KEY = "chromeDriverPath";
-    private static final String CHROME_DRIVER_TIMEOUT_PROPERTY_KEY = "chromeDriverTimeOut";
 
-    private String url = "https://mail.google.com";
+    private String url;
 
     private Properties properties;
-    private ThreadLocal<WebDriverPool> webDriverPool;
+    private ChromeDriverPool chromeDriverPool;
 
     @DataProvider(name = "loginData", parallel = true)
     private Object[][] loginData() {
@@ -37,17 +31,14 @@ public class TestGmail {
     }
 
     @BeforeSuite
-    public void logSuiteStart() {
+    @Parameters("url")
+    public void init(String url) {
         LOG.info("================== Suite1 START ==================");
+        this.url = url;
         properties = new Properties();
-        properties = Utils.readProperties();
+        chromeDriverPool = new ChromeDriverPool();
+        properties = Utils.getProperties();
         System.setProperty(properties.getProperty(CHROME_DRIVER_TYPE_PROPERTY_KEY), properties.getProperty(CHROME_DRIVER_PATH_PROPERTY_KEY));
-        webDriverPool = new ThreadLocal<>();
-    }
-
-    @BeforeTest
-    public void logTestStart() {
-        LOG.info("================== Test1 START ==================");
     }
 
     @Test(dataProvider = "loginData")
@@ -55,16 +46,20 @@ public class TestGmail {
         String expectedMessage = "3 conversations moved to Bin.";
         int emailsCountToMarkAsImportant = 5;
         int emailsCountToDelete = 3;
-        webDriverPool.set(new WebDriverPool());
-        WebDriver driver = webDriverPool.get().initAndGetDriver(properties.getProperty(CHROME_DRIVER_TIMEOUT_PROPERTY_KEY));
+        WebDriver driver = chromeDriverPool.getDriver();
         driver.get(url);
-        LoginBO loginBO1 = new LoginBO(driver);
-        loginBO1.loginGmail(userName, password);
-        GmailBO gmailBO1 = new GmailBO(driver);
-        Assert.assertEquals(gmailBO1.markEmailsAsImportant(emailsCountToMarkAsImportant), emailsCountToMarkAsImportant);
-        gmailBO1.openImportantFolder();
-        Assert.assertEquals(gmailBO1.deleteEmails(emailsCountToDelete), expectedMessage);
-        webDriverPool.get().quit();
+        LoginBO loginBO = new LoginBO(driver);
+        loginBO.loginGmail(userName, password);
+        GmailBO gmailBO = new GmailBO(driver);
+        Assert.assertEquals(gmailBO.markEmailsAsImportant(emailsCountToMarkAsImportant), emailsCountToMarkAsImportant);
+        gmailBO.openImportantFolder();
+        Assert.assertEquals(gmailBO.deleteEmails(emailsCountToDelete), expectedMessage);
+        chromeDriverPool.closeDriver();
+    }
+
+    @BeforeTest
+    public void logTestStart() {
+        LOG.info("================== Test1 START ==================");
     }
 
     @AfterTest
